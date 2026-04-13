@@ -54,10 +54,10 @@
                 목적 프로그램
 ```
 
-- **전반부 (분석 단계)** : 어휘 분석 → 구문 분석 → 의미 분석
-- **후반부 (합성 단계)** : 중간 코드 생성 → 코드 최적화 → 코드 생성
-- 좌측 : 기호표 관리 (모든 단계 접근)
-- 우측 : 에러 처리 (모든 단계 접근)
+- **전단부(front-end, 분석 단계)** : 어휘 분석 → 구문 분석 → 의미 분석
+- **후단부(back-end, 합성 단계)** : 중간 코드 생성 → 코드 최적화 → 코드 생성
+- 좌측 : 기호표(symbol table) 관리 — 모든 단계에서 접근
+- 우측 : 에러 처리(error handling) — 모든 단계에서 접근
 
 ---
 
@@ -67,18 +67,20 @@
 
 **ac (adding calculator)**
 
-- **데이터 타입** : 정수, 실수
+- **데이터 타입** : 정수(integer), 실수(float)
   - 실수는 소수점 이하 5자리까지만 허용
-- **키워드** : `f` (float), `i` (integer), `p` (print)
+- **키워드(keyword)** : `f` (float), `i` (integer), `p` (print)
 - **변수** : 알파벳 소문자 23자 (키워드 3개 `f`, `i`, `p` 제외)
-  - 변수는 사용하기 전에 먼저 선언해야 함
+  - 변수는 사용하기 전에 반드시 먼저 선언해야 함
+  - ac는 **정적 타입(static typing)** 언어 — 선언 시 타입이 확정되며 이후 변경 불가
+  - 같은 변수를 중복 선언하거나 타입을 바꾸는 것은 오류
 - **형 변환** :
-  - 정수형 → 실수형 변환은 자동
+  - 정수형(integer) → 실수형(float) 변환은 자동
   - 다른 종류의 형 변환은 허용하지 않음
 
 **목적 코드 : dc (desk calculator)**
-- 스택 기반 계산기
-- 역폴란드 표기법으로 코드 생성
+- 스택(stack) 기반 계산기
+- 역폴란드 표기법(Reverse Polish Notation)으로 코드 생성
 
 ```
 ac 프로그램 : 2 + 3
@@ -86,14 +88,14 @@ ac 프로그램 : 2 + 3
 실행 결과   : 5
 ```
 
-> - **스택 기반 계산기** : 스택(stack)에 값을 쌓아두고, 연산자가 나오면 스택에서 값을 꺼내 계산하는 방식
-> - **역폴란드 표기법** : 연산자를 피연산자 뒤에 쓰는 표기법. `2 + 3` 을 `2 3 +` 로 표현. 괄호 없이도 연산 순서가 명확해서 컴퓨터가 처리하기 쉬움
+> - **스택 기반 계산기** : 스택에 값을 쌓아두고, 연산자가 나오면 스택에서 값을 꺼내 계산하는 방식
+> - **역폴란드 표기법(Reverse Polish Notation)** : 연산자를 피연산자 뒤에 쓰는 표기법. `2 + 3` 을 `2 3 +` 로 표현. 괄호 없이도 연산 순서가 명확해서 컴퓨터가 처리하기 쉬움
 
 ---
 
-## 4. 문맥 자유 문법 (CFG for ac)
+## 4. 문맥 자유 문법 (CFG, Context-Free Grammar)
 
-**CFG (Context-Free Grammar)** : ac 언어의 문법을 정의하는 15개의 생성 규칙
+ac 언어의 문법을 정의하는 15개의 생성 규칙
 
 ```
  1  Prog  → Dcls Stmts $
@@ -154,7 +156,7 @@ Stmt → id assign Val Expr
 Nonterminals = { Prog, Dcls, Dcl, Stmts, Stmt, Expr, Val }
 ```
 
-- **시작 기호 (Start symbol)** : 비단말 기호 중 하나
+- **시작 기호(Start symbol)** : 비단말 기호 중 하나
   - ac의 시작 기호 = `Prog` (생성 규칙 1번 왼쪽)
   - 단, 시작 기호는 생성 규칙 왼쪽에 **한 번만** 사용할 수 있다
 
@@ -172,8 +174,8 @@ Nonterminals = { Prog, Dcls, Dcl, Stmts, Stmt, Expr, Val }
 terminals = { floatdcl, intdcl, id, assign, print, plus, minus, inum, fnum, $, λ }
 ```
 
-| 단말 기호 | 실제 입력 기호 |
-|----------|-------------|
+| 단말 기호(Terminal) | 실제 입력 기호 |
+|--------------------|-------------|
 | floatdcl | `f` |
 | intdcl | `i` |
 | assign | `=` |
@@ -185,16 +187,16 @@ terminals = { floatdcl, intdcl, id, assign, print, plus, minus, inum, fnum, $, �
 | fnum | `0.1`, `3.14`, … |
 
 **특수 단말 기호**
-- **`$`** : 입력 스트림의 끝 (the end of input stream). 실제로 입력하지 않지만 끝까지 읽었는지 확인하는 용도
-- **`λ` (람다) 또는 `ε` (입실론)** : 빈 문자열(empty string / null string). 생략 가능함을 의미
+- **`$`** : 입력 스트림(input stream)의 끝. 실제로 입력하지 않지만 끝까지 읽었는지 확인하는 용도
+- **`λ` (람다) 또는 `ε` (입실론)** : 빈 문자열(empty string). 생략 가능함을 의미
 
 **비단말 vs 단말 기호 정리**
 
 | 구분 | 위치 | 생성 규칙 |
 |------|------|---------|
-| 비단말 기호 (Nonterminal) | 왼쪽, 오른쪽 모두 | 있음 |
-| 단말 기호 (Terminal) | 오른쪽만 | 없음 |
-| 시작 기호 (Start symbol) | 왼쪽에 한 번만 | 있음 |
+| 비단말 기호(Nonterminal) | 왼쪽, 오른쪽 모두 | 있음 |
+| 단말 기호(Terminal) | 오른쪽만 | 없음 |
+| 시작 기호(Start symbol) | 왼쪽에 한 번만 | 있음 |
 
 > 실제 언어 문법 예시:
 > - XML 명세 : http://www.w3.org/TR/REC-xml/
@@ -212,14 +214,14 @@ b = a + 3.2 ← b에 a + 3.2 대입 (정수→실수 자동 형변환)
 p b        ← b 출력
 ```
 
-**단말 기호와 실제 입력 대응**
+**단말 기호(Terminal)와 실제 입력 대응**
 
 ```
-f b        →  floatdcl id   (선언부)
-i a        →  intdcl id     (선언부)
-a = 5      →  id assign inum (문장)
-b = a + 3.2 → id assign id plus fnum (문장)
-p b        →  print id      (문장)
+f b         →  floatdcl id          (선언부)
+i a         →  intdcl id            (선언부)
+a = 5       →  id assign inum       (문장)
+b = a + 3.2 →  id assign id plus fnum (문장)
+p b         →  print id             (문장)
 ```
 
 ---
@@ -232,32 +234,32 @@ p b        →  print id      (문장)
 `f b / i a / a = 5 / b = a + 3.2 / p b` 의 유도 과정:
 
 ```
-단계 | 문장 형태 (Sentential Form)                                    | 적용 규칙
------|------------------------------------------------------------------|----------
-  1  | <Prog>                                                          |
-  2  | <Dcls> Stmts $                                                  | 1
-  3  | <Dcl> Dcls Stmts $                                              | 2
-  4  | floatdcl id <Dcls> Stmts $                                      | 4
-  5  | floatdcl id <Dcl> Dcls Stmts $                                  | 2
-  6  | floatdcl id intdcl id <Dcls> Stmts $                            | 5
-  7  | floatdcl id intdcl id <Stmts> $                                 | 3
-  8  | floatdcl id intdcl id <Stmt> Stmts $                            | 6
-  9  | floatdcl id intdcl id id assign <Val> Expr Stmts $              | 8
- 10  | floatdcl id intdcl id id assign inum <Expr> Stmts $             | 14
- 11  | floatdcl id intdcl id id assign inum <Stmts> $                  | 12
- 12  | floatdcl id intdcl id id assign inum <Stmt> Stmts $             | 6
- 13  | floatdcl id intdcl id id assign inum id assign <Val> Expr Stmts $| 8
- 14  | floatdcl id intdcl id id assign inum id assign id <Expr> Stmts $ | 13
- 15  | floatdcl id intdcl id id assign inum id assign id plus <Val> Expr Stmts $ | 10
+단계 | 문장 형태 (Sentential Form)                                              | 적용 규칙
+-----|--------------------------------------------------------------------------|----------
+  1  | <Prog>                                                                   |
+  2  | <Dcls> Stmts $                                                           | 1
+  3  | <Dcl> Dcls Stmts $                                                       | 2
+  4  | floatdcl id <Dcls> Stmts $                                               | 4
+  5  | floatdcl id <Dcl> Dcls Stmts $                                           | 2
+  6  | floatdcl id intdcl id <Dcls> Stmts $                                     | 5
+  7  | floatdcl id intdcl id <Stmts> $                                          | 3
+  8  | floatdcl id intdcl id <Stmt> Stmts $                                     | 6
+  9  | floatdcl id intdcl id id assign <Val> Expr Stmts $                       | 8
+ 10  | floatdcl id intdcl id id assign inum <Expr> Stmts $                      | 14
+ 11  | floatdcl id intdcl id id assign inum <Stmts> $                           | 12
+ 12  | floatdcl id intdcl id id assign inum <Stmt> Stmts $                      | 6
+ 13  | floatdcl id intdcl id id assign inum id assign <Val> Expr Stmts $        | 8
+ 14  | floatdcl id intdcl id id assign inum id assign id <Expr> Stmts $         | 13
+ 15  | floatdcl id intdcl id id assign inum id assign id plus <Val> Expr Stmts $| 10
  16  | floatdcl id intdcl id id assign inum id assign id plus fnum <Expr> Stmts $| 15
- 17  | floatdcl id intdcl id id assign inum id assign id plus fnum <Stmts> $     | 12
+ 17  | floatdcl id intdcl id id assign inum id assign id plus fnum <Stmts> $    | 12
  18  | floatdcl id intdcl id id assign inum id assign id plus fnum <Stmt> Stmts $| 6
  19  | floatdcl id intdcl id id assign inum id assign id plus fnum print id <Stmts> $ | 9
- 20  | floatdcl id intdcl id id assign inum id assign id plus fnum print id $    | 7
+ 20  | floatdcl id intdcl id id assign inum id assign id plus fnum print id $   | 7
 ```
 
 최종 결과: `floatdcl id intdcl id id assign inum id assign id plus fnum print id $`
-= `f b i a a = 5 b = a + 3.2 p b`  ✅
+= `f b i a a = 5 b = a + 3.2 p b` ✅
 
 ---
 
@@ -265,8 +267,8 @@ p b        →  print id      (문장)
 
 각 단말 기호를 **정규 표현식(Regular Expression)** 으로 형식적으로 정의.
 
-| 단말 기호 (토큰 형, type) | 정규 표현식 (토큰 값, value) | 의미 |
-|--------------------------|--------------------------|------|
+| 단말 기호(토큰 형, type) | 정규 표현식(토큰 값, value) | 의미 |
+|------------------------|--------------------------|------|
 | floatdcl | `"f"` | 키워드 |
 | intdcl | `"i"` | 키워드 |
 | print | `"p"` | 키워드 |
@@ -278,13 +280,13 @@ p b        →  print id      (문장)
 | fnum | `[0-9]+.[0-9]+` | 실수 (소수점 포함) |
 | blank | `(" ")+` | 공백 (1개 이상) |
 
-> 정규 표현에 **메타 심볼(meta symbol)** 을 사용할 수 있음
+> 정규 표현식에 **메타 심볼(meta symbol)** 을 사용할 수 있음
 > - `+` : 1개 이상 반복
 > - `|` : 또는(or)
 > - `[a-z]` : a부터 z 사이의 문자 중 하나
 
-- **토큰의 형 (type)** : 단말 기호 이름 (floatdcl, id, inum 등)
-- **토큰의 값 (value)** : 실제 입력된 문자열 (f, a, 5 등)
+- **토큰의 형(type)** : 단말 기호 이름 (floatdcl, id, inum 등)
+- **토큰의 값(value)** : 실제 입력된 문자열 (f, a, 5 등)
 
 ---
 
@@ -320,7 +322,7 @@ p b        →  print id      (문장)
                                                        3.2
 ```
 
-> 리프 노드(가장 아래 노드)를 왼쪽부터 읽으면 실제 입력 프로그램이 됨:
+> 리프 노드(leaf node, 가장 아래 노드)를 왼쪽부터 읽으면 실제 입력 프로그램이 됨:
 > `f b i a a = 5 b = a + 3.2 p b`
 
 ---
@@ -334,20 +336,24 @@ ac 언어
   목적 코드: dc (역폴란드 표기법)
 
 CFG 구성 요소
-  비단말 기호 (Nonterminal) : 생성 규칙 LHS. 확장 가능
-  단말 기호   (Terminal)    : 생성 규칙 RHS만. 더 이상 확장 불가
-  시작 기호   (Start symbol): 비단말 중 하나. LHS에 한 번만 등장
-  생성 규칙   (Production)  : A → B 형태. | 는 or
+  비단말 기호(Nonterminal) : 생성 규칙 LHS. 확장 가능
+  단말 기호(Terminal)      : 생성 규칙 RHS만. 더 이상 확장 불가
+  시작 기호(Start symbol)  : 비단말 중 하나. LHS에 한 번만 등장
+  생성 규칙(Production)    : A → B 형태. | 는 or
 
 특수 단말 기호
   $ : 입력 스트림의 끝
   λ : 빈 문자열 (생략 가능)
 
-유도 (Derivation)
+유도(Derivation)
   시작 기호에서 생성 규칙을 적용해 입력 프로그램으로 변환
   한 번에 비단말 기호 하나씩 적용
 
-토큰 명세
+토큰 명세(Token Specification)
   토큰 형(type)  : 단말 기호 이름
   토큰 값(value) : 정규 표현식으로 정의된 실제 입력 패턴
 ```
+
+---
+
+> 📁 참고: 컴파일러 구조 Part I — 홍윤식 교수
