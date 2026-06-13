@@ -6,8 +6,8 @@
 
 ### Parsing이란?
 - **Parsing (= Syntax Analysis)** : 입력 문장의 구성 요소를 낱낱이 분석하는 과정
-- 문장 구조(구문, Syntax)는 **Grammar(문법)** 에 정의되어 있음
-- 파싱 결과로 **Parse Tree(구문 트리)** 를 생성함
+- 문장 구조는 **문법** 에 정의되어 있음
+- 파싱 결과로 **구문 트리** 를 생성함
 
 ### 동작 방식
 ```
@@ -28,7 +28,7 @@ digit → 0 | 1 | 2 | … | 9
   1. `9-5` → list 이고, `2` → digit 이면 `list – digit` 규칙 적용 가능 ✅
   2. `9` → list 이고, `5+2` → digit? → digit은 한 자리 수만 가능 ❌
 
-> 하나의 production rule은 nonterminal의 가능한 구조 하나를 정의한다.  
+> 하나의 생성규칙은 비단말 기호의 가능한 구조 하나를 정의한다.  
 > `list → list + digit` : list는 `list + digit` 형태로 대체될 수 있다는 의미.
 
 ---
@@ -36,11 +36,11 @@ digit → 0 | 1 | 2 | … | 9
 ## 2. Context Free Grammar (CFG)
 
 ### 자연 언어 vs. 형식 언어
-| 구분 | 자연 언어 (Natural Language) | 형식 언어 (Formal Language) |
+| 구분 | 자연 언어 | 형식 언어 |
 |------|----------------------------|-----------------------------|
-| 특징 | 비형식적, 정보가 불명확함 | 5W1H 기반, 규칙의 집합 |
+| 특징 | 비형식적, 정보가 불명확함 | 육하원칙 기반, 규칙의 집합 |
 | 예 | "넘어져서 다리를 다쳤어" | 프로그래밍 언어 |
-| 문제 | Ambiguous (이중 의미 가능) | Well-Formed Formula 요구 |
+| 문제 | Ambiguous (이중 의미 가능) | Well-Formed Formula(문법규칙을 올바르게 따른 식) 요구 |
 
 > 프로그래밍 언어 = 형식 언어 = 규칙(문법)의 집합
 
@@ -52,7 +52,7 @@ CFG는 `G = {T, N, S, P}` 로 정의된다.
 | **T** | Terminals (단말 기호) | 언어의 원자 기호, 더 이상 쪼개지지 않음 | `(`, `)`, `+`, `-`, `*`, `number` |
 | **N** | Nonterminals (비단말 기호) | 언어 구조를 나타내는 변수 | `exp`, `op` |
 | **S** | Start Symbol (시작 기호) | 언어의 최상위 구조를 나타내는 nonterminal | `exp` |
-| **P** | Productions (생성 규칙) | nonterminal을 terminal/nonterminal 문자열로 대체하는 규칙 | `exp → exp op exp` |
+| **P** | Productions (생성 규칙) | 비단말 기호를 단말/비단말 기호열로 대체하는 규칙 | `exp → exp op exp` |
 
 ### Nonterminal vs. Terminal
 - **Nonterminal** : 가능한 내용을 대표하는 상징적 기호 (예: `사람`, `exp`)
@@ -277,17 +277,4 @@ S → S S + | S S * | a
 
 ---
 
-## 핵심 요약
 
-| 개념 | 내용 |
-|------|------|
-| CFG | G = {T, N, S, P} |
-| Terminal | 더 이상 치환 불가. 실제 토큰 |
-| Nonterminal | 치환 가능한 변수. 언어 구조 표현 |
-| Derivation | 생성 규칙을 반복 적용해 sentence 생성 |
-| Sentential form | nonterminal 포함 (불완전) |
-| Sentence | terminal만 포함 (완전한 문장) |
-| Leftmost | 왼쪽 NT 먼저 → Top-Down → LL |
-| Rightmost | 오른쪽 NT 먼저 → Bottom-Up → LR |
-| Parse Tree | 유도 과정의 그래픽 표현 |
-| ε-production | 오른쪽이 비어있는 규칙 |
